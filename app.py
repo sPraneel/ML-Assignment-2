@@ -75,6 +75,17 @@ ax.set_title(f"Confusion Matrix for {selected_model_name}")
 st.pyplot(fig)
 
 st.subheader("Dataset Upload")
+
+# Add download button for sample data
+with open("sample_test_data.csv", "rb") as file:
+    st.download_button(
+        label="Download Sample Test Data",
+        data=file,
+        file_name="sample_test_data.csv",
+        mime="text/csv",
+        help="Download this sample file to test the prediction functionality."
+    )
+
 uploaded_file = st.file_uploader("Upload your own CSV for prediction (must have same features as training data)", type=["csv"])
 
 if uploaded_file is not None:
