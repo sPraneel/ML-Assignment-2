@@ -7,6 +7,20 @@ import matplotlib.pyplot as plt
 import os
 
 st.title("ML Classification Model Dashboard")
+
+# Debug Info
+if st.checkbox("Show Debug Info"):
+    st.write(f"Scikit-learn version: {joblib.__version__}") # Joblib version as proxy or import sklearn
+    import sklearn
+    st.write(f"Sklearn version: {sklearn.__version__}")
+    st.write(f"Pandas version: {pd.__version__}")
+    st.write(f"Numpy version: {np.__version__}")
+    try:
+        import xgboost
+        st.write(f"XGBoost version: {xgboost.__version__}")
+    except ImportError:
+        st.write("XGBoost not installed")
+
 st.write("This application demonstrates various classification models on the Breast Cancer Wisconsin dataset.")
 
 # Load the scaler and test data
@@ -16,6 +30,9 @@ try:
     y_test = joblib.load('model/y_test.pkl')
 except FileNotFoundError:
     st.error("Model files not found. Please ensure 'model_training.py' has been run to train and save models.")
+    st.stop()
+except Exception as e:
+    st.error(f"Error loading base files: {e}")
     st.stop()
 
 # Define model names
@@ -37,15 +54,22 @@ try:
 except FileNotFoundError:
     st.error(f"Model file for {selected_model_name} not found.")
     st.stop()
+except Exception as e:
+    st.error(f"Error loading model {selected_model_name}: {e}")
+    st.stop()
 
 st.header(f"Results for {selected_model_name}")
 
 # Make predictions
-y_pred = model.predict(X_test_scaled)
-if hasattr(model, "predict_proba"):
-    y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
-else:
-    y_pred_proba = [0] * len(y_test) # Dummy for models without predict_proba
+try:
+    y_pred = model.predict(X_test_scaled)
+    if hasattr(model, "predict_proba"):
+        y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+    else:
+        y_pred_proba = [0] * len(y_test) # Dummy for models without predict_proba
+except Exception as e:
+    st.error(f"Error making predictions: {e}")
+    st.stop()
 
 # Calculate metrics
 accuracy = accuracy_score(y_test, y_pred)
