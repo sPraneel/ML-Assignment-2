@@ -82,3 +82,8 @@ project-folder/
 |-- model_evaluation.py             # Script to evaluate models (generates CSV results)
 |-- model_evaluation_results.csv    # CSV containing evaluation metrics for all models
 ```
+
+
+Screenshot 
+
+![alt text](<Screenshot-1.png>)
